@@ -56,7 +56,15 @@ public class AgentConnectionMgtDao {
                 agentConnection.setNode(resultSet.getString("UM_NODE"));
                 agentConnections.add(agentConnection);
             }
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                throw new WSUserStoreException(
+                        "SQL transaction rollback connection error occurred while reading agent connection for tenant "
+                                + tenantDomain, e1);
+            }
             throw new WSUserStoreException("Error occurred while reading agent connection for tenant " + tenantDomain,
                     e);
         } finally {
@@ -84,6 +92,13 @@ public class AgentConnectionMgtDao {
             connection.commit();
             return true;
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                throw new WSUserStoreException(
+                        "SQL transaction rollback connection error occurred while deleting agent connection for tenant : "
+                                + domain, e1);
+            }
             throw new WSUserStoreException("Error occurred while deleting agent connection for tenant : " + domain, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);
@@ -112,6 +127,13 @@ public class AgentConnectionMgtDao {
             connection.commit();
             return true;
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                throw new WSUserStoreException(
+                        "SQL transaction rollback connection error occurred while updating connection status for tenant "
+                                + tenantDomain, e1);
+            }
             throw new WSUserStoreException("Error occurred while updating connection status for tenant " + tenantDomain,
                     e);
         } finally {
