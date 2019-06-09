@@ -44,13 +44,7 @@ public class TokenMgtDao {
                 return resultSet.getString("UM_TOKEN");
             }
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                throw new WSUserStoreException(
-                        "SQL transaction rollback connection error occurred while reading agent connection for tenant "
-                                + tenantDomain, e1);
-            }
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while reading agent connection for tenant " + tenantDomain,
                     e);
         } finally {
@@ -78,12 +72,7 @@ public class TokenMgtDao {
             connection.commit();
             return true;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                throw new WSUserStoreException(
-                        "SQL transaction rollback connection error occurred while persisting " + "access token", e1);
-            }
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while persisting access token", e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);
@@ -111,13 +100,7 @@ public class TokenMgtDao {
             connection.commit();
             return true;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                throw new WSUserStoreException(
-                        "SQL transaction rollback connection error occurred while deactivating " + "access for domain: "
-                                + domain, e1);
-            }
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while deactivating access for domain: " + domain, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);
@@ -143,13 +126,7 @@ public class TokenMgtDao {
             connection.commit();
             return true;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                throw new WSUserStoreException(
-                        "SQL transaction rollback connection error occurred while updating " + "access token status to:"
-                                + status, e1);
-            }
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while updating access token status to:" + status, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);

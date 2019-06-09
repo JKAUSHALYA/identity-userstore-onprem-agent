@@ -76,4 +76,21 @@ public class DatabaseUtil {
             throw new WSUserStoreException(errMsg, e);
         }
     }
+
+    /**
+     * Revoke the transaction when catch then sql transaction errors.
+     *
+     * @param dbConnection database connection.
+     * @throws SQLException SQL Exception.
+     */
+    public static void rollbackTransaction(Connection dbConnection) {
+
+        try {
+            if (dbConnection != null) {
+                dbConnection.rollback();
+            }
+        } catch (SQLException e1) {
+            LOGGER.error("An error occurred while rolling back transactions. ", e1);
+        }
+    }
 }
