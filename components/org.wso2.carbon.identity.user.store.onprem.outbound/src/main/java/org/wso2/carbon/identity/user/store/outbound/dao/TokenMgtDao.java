@@ -39,10 +39,12 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(2, domain);
             insertTokenPrepStmt.setString(3, status);
             resultSet = insertTokenPrepStmt.executeQuery();
+            DatabaseUtil.commitTransaction(connection);
             if (resultSet.next()) {
                 return resultSet.getString("UM_TOKEN");
             }
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while reading agent connection for tenant " + tenantDomain,
                     e);
         } finally {
@@ -67,9 +69,10 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(3, token.getTenant());
             insertTokenPrepStmt.setString(4, token.getDomain());
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while persisting access token", e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);
@@ -94,9 +97,10 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(2, tenantDomain);
             insertTokenPrepStmt.setString(3, domain);
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while deactivating access for domain: " + domain, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);
@@ -119,9 +123,10 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(1, status);
             insertTokenPrepStmt.setString(2, accessToken);
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while updating access token status to:" + status, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);

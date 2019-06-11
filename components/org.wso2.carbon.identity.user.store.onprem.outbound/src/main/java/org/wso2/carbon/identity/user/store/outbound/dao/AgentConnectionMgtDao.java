@@ -56,7 +56,9 @@ public class AgentConnectionMgtDao {
                 agentConnection.setNode(resultSet.getString("UM_NODE"));
                 agentConnections.add(agentConnection);
             }
+            DatabaseUtil.commitTransaction(connection);
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while reading agent connection for tenant " + tenantDomain,
                     e);
         } finally {
@@ -81,9 +83,10 @@ public class AgentConnectionMgtDao {
             insertTokenPrepStmt.setString(1, domain);
             insertTokenPrepStmt.setString(2, tenantDomain);
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while deleting agent connection for tenant : " + domain, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, insertTokenPrepStmt);
@@ -109,9 +112,10 @@ public class AgentConnectionMgtDao {
             insertTokenPrepStmt.setString(2, domain);
             insertTokenPrepStmt.setString(3, tenantDomain);
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
+            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while updating connection status for tenant " + tenantDomain,
                     e);
         } finally {
