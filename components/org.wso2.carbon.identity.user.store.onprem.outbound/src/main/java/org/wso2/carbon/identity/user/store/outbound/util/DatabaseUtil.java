@@ -93,4 +93,21 @@ public class DatabaseUtil {
             LOGGER.error("An error occurred while rolling back transactions. ", e1);
         }
     }
+
+    /**
+     * Commit the transaction.
+     *
+     * @param dbConnection database connection.
+     * @throws SQLException SQL Exception.
+     */
+    public static void commitTransaction(Connection dbConnection) {
+
+        try {
+            if (dbConnection != null) {
+                dbConnection.commit();
+            }
+        } catch (SQLException e1) {
+            LOGGER.error("An error occurred while commit transactions. ", e1);
+        }
+    }
 }

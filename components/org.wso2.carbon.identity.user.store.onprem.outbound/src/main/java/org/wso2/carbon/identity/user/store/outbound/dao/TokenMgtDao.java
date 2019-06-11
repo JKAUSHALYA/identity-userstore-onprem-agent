@@ -39,7 +39,7 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(2, domain);
             insertTokenPrepStmt.setString(3, status);
             resultSet = insertTokenPrepStmt.executeQuery();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             if (resultSet.next()) {
                 return resultSet.getString("UM_TOKEN");
             }
@@ -69,7 +69,7 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(3, token.getTenant());
             insertTokenPrepStmt.setString(4, token.getDomain());
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
             DatabaseUtil.rollbackTransaction(connection);
@@ -97,7 +97,7 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(2, tenantDomain);
             insertTokenPrepStmt.setString(3, domain);
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
             DatabaseUtil.rollbackTransaction(connection);
@@ -123,7 +123,7 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(1, status);
             insertTokenPrepStmt.setString(2, accessToken);
             insertTokenPrepStmt.executeUpdate();
-            connection.commit();
+            DatabaseUtil.commitTransaction(connection);
             return true;
         } catch (SQLException e) {
             DatabaseUtil.rollbackTransaction(connection);
