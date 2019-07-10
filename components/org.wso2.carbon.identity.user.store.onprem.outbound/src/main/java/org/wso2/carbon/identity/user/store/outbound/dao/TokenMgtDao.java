@@ -30,7 +30,7 @@ import java.sql.SQLException;
 public class TokenMgtDao {
 
     public String getAccessToken(String tenantDomain, String domain, String status) throws WSUserStoreException {
-        Connection connection = DatabaseUtil.getInstance().getDBConnection();
+        Connection connection = DatabaseUtil.getInstance().getDBConnection(false);
         PreparedStatement insertTokenPrepStmt = null;
         ResultSet resultSet = null;
         try {
@@ -39,12 +39,10 @@ public class TokenMgtDao {
             insertTokenPrepStmt.setString(2, domain);
             insertTokenPrepStmt.setString(3, status);
             resultSet = insertTokenPrepStmt.executeQuery();
-            DatabaseUtil.commitTransaction(connection);
             if (resultSet.next()) {
                 return resultSet.getString("UM_TOKEN");
             }
         } catch (SQLException e) {
-            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while reading agent connection for tenant " + tenantDomain,
                     e);
         } finally {
