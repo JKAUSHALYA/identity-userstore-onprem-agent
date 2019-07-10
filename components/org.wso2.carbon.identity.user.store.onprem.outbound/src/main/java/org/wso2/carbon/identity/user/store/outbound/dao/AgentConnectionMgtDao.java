@@ -40,7 +40,7 @@ public class AgentConnectionMgtDao {
      * @throws org.wso2.carbon.identity.user.store.outbound.exception.WSUserStoreException
      */
     public List<AgentConnection> getAgentConnections(String tenantDomain, String domain) throws WSUserStoreException {
-        Connection connection = DatabaseUtil.getInstance().getDBConnection();
+        Connection connection = DatabaseUtil.getInstance().getDBConnection(false);
         PreparedStatement insertTokenPrepStmt = null;
         ResultSet resultSet = null;
         List<AgentConnection> agentConnections = new ArrayList<>();
@@ -56,9 +56,7 @@ public class AgentConnectionMgtDao {
                 agentConnection.setNode(resultSet.getString("UM_NODE"));
                 agentConnections.add(agentConnection);
             }
-            DatabaseUtil.commitTransaction(connection);
         } catch (SQLException e) {
-            DatabaseUtil.rollbackTransaction(connection);
             throw new WSUserStoreException("Error occurred while reading agent connection for tenant " + tenantDomain,
                     e);
         } finally {

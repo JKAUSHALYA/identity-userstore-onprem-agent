@@ -58,18 +58,37 @@ public class DatabaseUtil {
     }
 
     /**
+     * Returns an database connection.
+     *
+     * @return dbConnection
+     * @throws WSUserStoreException
+     * @Deprecated The getDBConnection should handle both transaction and non-transaction connection. Earlier it
+     * handle only the transactionConnection. Therefore this method was deprecated and changed as handle both
+     * transaction and non-transaction connection. getDBConnection(boolean shouldApplyTransaction) method used as
+     * alternative of this method.
+     */
+    @Deprecated
+    public Connection getDBConnection() throws WSUserStoreException {
+
+        return getDBConnection(true);
+    }
+
+    /**
      * Get database connection
      * @return database connection
      * @throws WSUserStoreException
      */
-    public Connection getDBConnection() throws WSUserStoreException {
+    public Connection getDBConnection(boolean shouldApplyTransaction) throws WSUserStoreException {
+
         try {
             if (dataSource == null) {
                 throw new WSUserStoreException("Error occurred while getting connection. Datasource is null");
             }
             Connection dbConnection = dataSource.getConnection();
-            dbConnection.setAutoCommit(false);
-            dbConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            if (shouldApplyTransaction) {
+                dbConnection.setAutoCommit(false);
+                dbConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            }
             return dbConnection;
         } catch (SQLException e) {
             String errMsg = "Error when getting a database connection object from the Identity data source.";
